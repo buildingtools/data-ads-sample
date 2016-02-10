@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load tags %}
+{% load humanize %}
+
+{% block title %}Ads Accounts{% endblock %}
+
+{% block content %}
+<div class="row">
+  <h4>Ads Accounts</h4>
+
+  <!-- Step Through -->
+  <div class="alert alert-warning" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">×</span>
+   </button>
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    An advertising <strong>account</strong> is correlated to a specific user who can promote activity on or off Twitter e.g. <a href="http://twitter.com/gpj">@gpj</a>.
+  </div>
+
+  <!-- Setup Table to consume Ads Api -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Id</th>
+      </tr>
+    </thead>
+    <tbody class="table-data">
+    </tbody>
+  </table>
+</div>
+<script>
+$(document).ready(function () {
+    $.getJSON("../ads/api/accounts",
+    function (json) {
+        var tr;
+        for (var i = 0; i < json["accounts"].length; i++) {
+            tr = $('<tr/>');
+            var account_id = json["accounts"][i].id
+            tr.append("<td><a href='campaigns?account_id=" + json["accounts"][i].id + "'>" + json["accounts"][i].name + "</a></td>");
+            tr.append("<td>" + account_id + "</td>");
+            $('.table').append(tr);
+        }
+    });
+});
+</script>
+{% endblock %}

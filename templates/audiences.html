@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load tags %}
+{% load humanize %}
+
+{% block title %}Ads Accounts{% endblock %}
+
+{% block content %}
+<div class="row">
+  <h4>Audiences</h4>
+
+          <div class="alert alert-warning" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+           </button>
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            An audience is a collection of Twitter user IDs that are targetable via a Campaign.
+          </div>
+
+  <div class="alert alert-danger error hide" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    <span class="error-details">Wow something weird happened</span>
+  </div>
+
+  <!-- Setup Table to consume Ads Api -->
+  <table class="table" style="width:80%">
+    <thead>
+      <tr>
+        <th>Search Query</th>
+        <th>Audience Bucket</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody class="table-data">
+    </tbody>
+  </table>
+</div>
+
+<script>
+
+function displayAudiences(){
+
+  $(".table-data").html("");
+
+  var audienceList = localStorage.getItem("audienceList");
+  if (audienceList != null) {
+
+    var json_list = JSON.parse(audienceList);
+    for (var i=0; i < json_list.length; i++) {
+        var item = json_list[i];
+
+        if (item){
+          tr = $('<tr/>');
+          tr.append("<td>" + item["location"] + "</td>");
+          tr.append("<td>" + item["query"] + "</td>");
+          td2 = $('<td/>');
+          td2.append("<button class='ta btn btn-sm btn-danger' data-id='" + item['location'] + "'>Target Audience</button> ")
+          td2.append("<button class='ta-del btn btn-sm btn-primary' data-id='" + item['location'] + "'>Delete</button>")
+          tr.append(td2)
+          $(".table").append(tr);
+        }
+    }
+  }
+
+}
+
+</script>
+
+<!-- Modal -->
+<div id="adsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Ads</h4>
+      </div>
+      <div class="modal-body">
+
+				<!-- Setup Account-->
+				<div class="ads-accounts">
+					<h3>Select Account</h3>
+
+          <!-- Assert msg -->
+          <div class="alert alert-warning" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+           </button>
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            An advertising <strong>account</strong> is correlated to a specific user who can promote activity on or off Twitter e.g. <a href="http://twitter.com/gpj">@gpj</a>.
+          </div>
+
+					<!-- Single button -->
+					<div class="btn-group">
+					  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    Select Ads Account <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu dropdown-ads-accounts"></ul>
+					</div>
+				</div>
+
+				<!-- Setup Campaign-->
+				<div class="ads-campaigns">
+					<h3>Select Campaign</h3>
+          <!-- Step Through -->
+          <div class="alert alert-warning" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+           </button>
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            An advertising <strong>campaign</strong> is a series of advertisement messages that share a single idea and theme e.g. Superbowl Promotion Campaign.
+          </div>
+
+
+					<!-- Single button -->
+					<div class="btn-group">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Select Campaign <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu dropdown-ads-campaigns"></ul>
+					</div>
+				</div>
+
+				<!-- Setup LineItems-->
+				<div class="ads-lineitems">
+					<h3>Select Line Item</h3>
+
+          <!-- Step Through -->
+          <div class="alert alert-warning" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+           </button>
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            An advertising <strong>line-item</strong> specifies the details of the sale, such as type, section, create, date(s) to run, cost, etc. e.g. Half-Time Promoted Tweet.
+          </div>
+
+					<!-- Single button -->
+					<div class="btn-group">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Select Line Item <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu dropdown-ads-lineitems"></ul>
+					</div>
+				</div>
+
+				<!-- Setup Targeting-->
+				<div class="ads-targeting">
+
+          <div class="alert alert-success">
+            <strong>Success!</strong> You have successfully created targeting critera for your campaign.
+          </div>
+
+				</div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<script>
+var page = "AUDIENCE";
+</script>
+<script src="{{STATIC_URL}}js/ads.js"></script>
+<script src="{{STATIC_URL}}js/audiences.js"></script>
+
+{% endblock %}

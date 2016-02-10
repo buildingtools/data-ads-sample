@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+{% load tags %}
+{% load humanize %}
+
+{% block title %}Twitter Search Demo{% endblock %}
+
+{% block content %}
+
+<div class="row">
+  <h4>Data</h4>
+  
+            <div class="alert alert-warning" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+           </button>
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            Use the data tool to search for volume of tweets about a particular subject. 
+          </div>
+
+<div class="col-md-offset-2 col-md-8">
+
+	<div class="row">
+	  <div class="col-md-10">
+    	<input type="text" class="form-control query-input" name="query0" id="query0" placeholder="(Walking Dead) OR #WalkingDead OR #TheWalkingDead has:media" value="{{query1}}">
+
+	    <div class="input-group query-input query-add" id="query1_holder">
+	    	<input type="text" class="form-control query-input" name="query1" id="query1" placeholder="(Walking Dead) OR #WalkingDead OR #TheWalkingDead has:media" value="{{query2}}">
+	        <span class="input-group-btn">
+        		<button tabindex="1" class="btn btn-default queryRemove" data-id="query1_holder" type="button">
+        			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        		</button>
+      		</span>
+  		</div>
+
+	    <div class="input-group query-input query-add" id="query2_holder">
+		    <input type="text" class="form-control query-input" name="query2" id="query2" placeholder="(Walking Dead) OR #WalkingDead OR #TheWalkingDead has:media" value="{{query3}}">
+	        <span class="input-group-btn">
+        		<button tabindex="2" class="btn btn-default queryRemove" data-id="query2_holder" type="button">
+        			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+				</button>
+      		</span>
+  		</div>
+
+	    <div class="input-group query-add" id="query3_holder">
+		    <input type="text" class="form-control query-input" name="query3" id="query3" placeholder="(Walking Dead) OR #WalkingDead OR #TheWalkingDead has:media" value="{{query3}}">
+	        <span class="input-group-btn">
+        		<button tabindex="3" class="btn btn-default queryRemove" data-id="query3_holder" type="button">
+        			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+				</button>
+      		</span>
+  		</div>
+
+	    <p class="help-block pull-right small">
+	    	<a href="#" id="queryAdd">add query</a>
+	    	|
+	    	<a href="#" data-toggle="collapse" data-target="#collapseOptions">advanced options</a>
+    	</p>
+	  </div>
+	  <div class="col-md-1">
+	    <button type="submit" class="btn btn-primary" id="search">Search</button>
+	  </div>
+		<div class="col-md-1">
+			<button type="submit" style="margin-left:10px" class="btn btn-danger create-audience">Create Audience</button>
+		</div>
+	</div>
+
+    <div id="collapseOptions" class="accordion-body collapse">
+      <div class="accordion-inner">
+
+		<form class="form-horizontal row">
+		  <div class="form-group form-group-sm">
+		    <label for="inputEmail3" class="col-sm-3 control-label">Start date</label>
+		    <div class="col-sm-3 input-group date datetimepicker">
+		      <input type="text" class="form-control input-sm" id="start" placeholder="">
+		      <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+		    </div>
+		  </div>
+		  <div class="form-group form-group-sm">
+		    <label for="inputPassword3" class="col-sm-3 control-label">End date</label>
+		    <div class="col-sm-3 input-group date datetimepicker">
+		      <input type="text" class="form-control input-sm" id="end" placeholder="">
+		      <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+		    </div>
+		  </div>
+
+		  <div class="form-group form-group-sm">
+		    <label for="inputPassword3" class="col-sm-3 control-label">Filter</label>
+		    <div class="col-sm-3">
+		      <div class="checkbox">
+		        <label>
+		          <input type="checkbox" id="media">Has media
+		        </label>
+		      </div>
+		    </div>
+		    <div class="col-sm-3">
+		      <div class="checkbox">
+		        <label>
+		          <input type="checkbox" id="video">Has video
+		        </label>
+		      </div>
+		    </div>
+		    <div class="col-sm-3">
+		      <div class="checkbox">
+		        <label>
+		          <input type="checkbox" id="retweet">Not retweet
+		          <p class="help-block" id="retweet_help">Specify original tweet: <i>(retweets_of_status_id:SOME_ID)</i></p>
+		        </label>
+		      </div>
+		    </div>
+		  </div>
+
+		  <div class="form-group form-group-sm">
+		    <div class="col-md-offset-3 col-sm-8 input-group date datetimepicker">
+          	    <p class="help-block">For advanced query syntax, read the <a href="http://support.gnip.com/apis/powertrack/rules.html" target="_target">GNIP Search API Reference</a>.</p>
+		    </div>
+		  </div>
+
+		  <hr>
+
+		  <div class="form-group form-group-sm">
+		    <label for="inputPassword3" class="col-sm-3 control-label">Results</label>
+		    <div class="col-sm-3">
+		      <div class="checkbox">
+		        <label>
+		          <input type="checkbox" id="results_chart" CHECKED> Timeline
+		        </label>
+		      </div>
+			</div>
+		    <div class="col-sm-3 input-group">
+		      <select id="chart_interval" class="form-control input-sm">
+		      	<option value="day">Days</option>
+		      	<option value="hour">Hours</option>
+		      </select>
+		    </div>
+		  </div>
+
+		  <div class="form-group form-group-sm">
+		    <label for="inputPassword3" class="col-sm-3 control-label"></label>
+		    <div class="col-sm-3">
+		      <div class="checkbox">
+		        <label>
+		          <input type="checkbox" id="results_tweets"> Display tweets
+		        </label>
+		      </div>
+			</div>
+		    <div class="col-sm-3 input-group">
+		    	<input type="text" class="form-control input-sm" id="embedCount" value="50">
+		    </div>
+		  </div>
+
+		  <div class="form-group form-group-sm">
+		    <label for="inputPassword3" class="col-sm-3 control-label"></label>
+		    <div class="col-sm-3">
+		      <div class="checkbox">
+		        <label>
+		          <input type="checkbox" id="results_frequency"> Term frequency
+		        </label>
+		      </div>
+		    </div>
+		  </div>
+
+		  <div class="form-group form-group-sm">
+		    <label for="inputPassword3" class="col-sm-3 control-label"></label>
+		    <div class="col-sm-3">
+		      <div class="checkbox">
+		        <label>
+		          <input type="checkbox" id="results_export"> CSV
+		        </label>
+		      </div>
+		    </div>
+		  </div>
+
+		</form>
+
+      </div>
+    </div>
+
+</div>
+
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-offset-1 col-md-10">
+
+	<div id="activity_volume">
+
+	<h3>Activity Volume</h3>
+
+	<p class="help-block">Tweet count: <span id="total"></span></p>
+
+	<div class="row volume">
+
+		<div class="col-md-12">
+			<div id="chart">Please select a data source and click "Submit".</div>
+		</div>
+
+	</div>
+
+	</div>
+
+</div>
+</div>
+<div id="chart_loading" class="loading"><img src="{{STATIC_URL}}/images/spinner.gif"></div>
+
+
+<div class="row" id="activity_tweets">
+<div class="col-md-offset-1 col-md-10">
+
+<h3>Activity</h3>
+
+<p class="help-block">Last {{tweets|length}}</p>
+
+<div id="tweets"></div>
+
+</div>
+</div>
+<div id="tweets_loading" class="loading"><img src="{{STATIC_URL}}/images/spinner.gif"></div>
+
+
+<div class="row" id="terms_frequency">
+<div class="col-md-offset-1 col-md-10">
+
+<h3>Term frequency</h3>
+
+	<table class="table table-striped table-condensed" id="frequency">
+		<tr>
+		<th></th>
+		<th>Term</th>
+		<th>Mentions (<span class="frequency_sample"></span>)</th>
+		<th>Mentions %</th>
+		<th>Activities (<span class="frequency_sample"></span>)</th>
+		<th>Activities %</th>
+		</tr>
+	</table>
+	<button type="button" id="adsExport" class="btn btn-info btn-lg" data-toggle="modal" data-target="#adsModal">Export to Ads</button>
+</div>
+</div>
+
+<div id="frequency_loading" class="loading"><img src="{{STATIC_URL}}/images/spinner.gif"></div>
+
+<br><br><br>
+
+<!-- Request for specific script for home aka data -->
+<script src="{{STATIC_URL}}js/script.js"></script>
+
+{% verbatim %}
+<script id="templateTweet" type="text/template">
+<article class="white-panel">
+	<blockquote class="{{class}}" lang="en">
+		<p>{{body}}</p>
+		&mdash;
+		{{actor.displayName}} ({{actor.preferredUsername}})<a href="{{object.link}}">{{object.postedTime}}</a>
+	</blockquote>
+</article>
+</script>
+
+<script id="templateFrequencyLoading" type="text/template">
+<tr>
+	<td colspan="6"><div class="loading"><center><img src="/static/images/spinner.gif"></center></div></td>
+</tr>
+</script>
+
+<script id="templateFrequency" type="text/template">
+<tr>
+	<td><input type="checkbox" value="{{4}}" class="term"></td>
+	<td>{{4}}</td>
+	<td>{{0}}</td>
+	<td>{{mentionPercent}}</td>
+	<td>{{2}}</td>
+	<td>{{activityPercent}}</td>
+</tr>
+</script>
+
+{% endverbatim %}
+
+<script language="JavaScript1.2">
+
+window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+
+  return t;
+}(document, "script", "twitter-wjs"));
+
+$('#tweets').pinterest_grid({
+	no_columns: 3,
+	padding_x: 10,
+	padding_y: 10,
+	margin_bottom: 50,
+	single_column_breakpoint: 700
+});
+
+var query0 = "{{query0}}";
+
+$("#adsExport").click(function(e) {
+	listAccounts();
+});
+
+</script>
+
+
+<!-- Modal -->
+<div id="adsModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Ads</h4>
+      </div>
+      <div class="modal-body">
+
+				<!-- Setup Account-->
+				<div class="ads-accounts">
+					<h3>Select Account</h3>
+					<!-- Single button -->
+					<div class="btn-group">
+					  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    Select Ads Account <span class="caret"></span>
+					  </button>
+					  <ul class="dropdown-menu dropdown-ads-accounts"></ul>
+					</div>
+				</div>
+
+				<!-- Setup Campaign-->
+				<div class="ads-campaigns">
+					<h3>Select Campaign</h3>
+					<!-- Single button -->
+					<div class="btn-group">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Select Campaign <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu dropdown-ads-campaigns"></ul>
+					</div>
+				</div>
+
+				<!-- Setup LineItems-->
+				<div class="ads-lineitems">
+					<h3>Select Line Item</h3>
+					<!-- Single button -->
+					<div class="btn-group">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Select Line Item <span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu dropdown-ads-lineitems"></ul>
+					</div>
+				</div>
+
+				<!-- Setup Targeting-->
+				<div class="ads-targeting">
+					<h3>Confirm Targeting</h3>
+					<!-- Single button -->
+					<ul class="ads-targeting-list"></ul>
+					<button type="button" class="btn btn-default btn-lg ads-add-targeting">Add Targeting</button>
+				</div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<script>
+var page = "HOME";
+</script>
+<script src="{{STATIC_URL}}js/ads.js"></script>
+{% endblock %}

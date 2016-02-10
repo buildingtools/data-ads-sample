@@ -10,9 +10,6 @@ as an audience via the TON API, and then allows creation of new Campaigns agains
 
 As always, when developing on top of the Twitter platform, you must abide by the [Developer Agreement & Policy](https://dev.twitter.com/overview/terms/agreement-and-policy).
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/garethpaul/tweet-search)
-
-
 Requirements
 ============
 

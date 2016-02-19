@@ -3,7 +3,8 @@ from gnip_search.gnip_search_api import QueryError as GNIPQueryError
 from timeframe import Timeframe
 from django.conf import settings
 import datetime
-
+from errors import ApiError
+import json
 import logging
 logging.info('Starting logger for ' + __name__)
 gnip_logger = logging.getLogger(__name__)
@@ -71,6 +72,7 @@ class GNIP:
             gnip_logger.error("%s (%s, %s)" % (e.message,
                                                e.payload,
                                                e.response))
+            raise ApiError(json.dumps(e.message))
 
         return timeline
 

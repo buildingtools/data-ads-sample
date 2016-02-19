@@ -17,6 +17,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import logout as auth_logout
 from django.conf import settings
 
+from errors import ApiError
+
 MAX_AGE = getattr(settings, 'CACHE_CONTROL_MAX_AGE', 2592000)
 
 # import twitter
@@ -57,14 +59,17 @@ def query_chart(request):
     queries = request.GET.getlist("queries[]")
     if query:
         queries = [query]
-
-    response_chart = Chart(queries=queries, request=request).data
-    response = HttpResponse(
-        json.dumps(response_chart),
-        content_type="application/json")
-    response['Cache-Control'] = 'max-age=%d' % MAX_AGE
-    return response
-
+    try:
+        response_chart = Chart(queries=queries, request=request).data
+        response = HttpResponse(
+                json.dumps(response_chart),
+                content_type="application/json")
+        response['Cache-Control'] = 'max-age=%d' % MAX_AGE
+        return response
+    except ApiError as e:
+        response_data = {}
+        response_data['error'] = str(e.message)
+        return HttpResponse(json.dumps(response_data), status=400, content_type="application/json")
 
 @login_required
 def query_frequency(request):

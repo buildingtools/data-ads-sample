@@ -5,6 +5,7 @@ from gnip_search.gnip_search_api import QueryError as GNIPQueryError
 from django.conf import settings
 import requests
 
+from errors import ApiError
 
 class Chart:
     """
@@ -41,8 +42,8 @@ class Chart:
                 if 'days' not in data:
                     data['days'] = request.days
 
-            except GNIPQueryError as e:
-                print e
+            except ApiError as e:
+                raise ApiError(e)
 
             # Process timeseries on the GNIP Data
             time_series_data = Timeseries(

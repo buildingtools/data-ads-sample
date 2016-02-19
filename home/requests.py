@@ -4,6 +4,10 @@ from timeframe import Timeframe
 from django.conf import settings
 import datetime
 
+import logging
+logging.info('Starting logger for ' + __name__)
+gnip_logger = logging.getLogger(__name__)
+gnip_logger.setLevel("INFO")
 
 class GNIP:
     """
@@ -29,6 +33,7 @@ class GNIP:
         """
         Returns a timeframe to use in the API query
         """
+        gnip_logger.info("Received request for timeline")
         request_timeframe = Timeframe(
             start=request.GET.get(
                 "start", None), end=request.GET.get(
@@ -63,7 +68,9 @@ class GNIP:
                 count_bucket=self.timeframe.interval,
                 csv_flag=False)
         except GNIPQueryError as e:
-            print e
+            gnip_logger.error("%s (%s, %s)" % (e.message,
+                                               e.payload,
+                                               e.response))
 
         return timeline
 
@@ -91,6 +98,7 @@ class GNIP:
                 end=self.timeframe.end.strftime(
                     self.DATE_FORMAT))
         except GNIPQueryError as e:
-            print e
-            return None
+                gnip_logger.error("%s (%s, %s)" % (e.message,
+                                                   e.payload,
+                                                   e.response))
         return tweets
